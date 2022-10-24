@@ -14,9 +14,11 @@ import com.example.resturantsearch.models.*
 import com.example.resturantsearch.repository.RestaurantRepository
 import com.example.resturantsearch.repository.RestaurantViewModelProviderFactory
 import com.example.resturantsearch.util.Resource
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.collections.ArrayList
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     lateinit var restaurantAdapter: RestaurantAdapter
@@ -32,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         val restaurantRepository=RestaurantRepository(application)
         val factory = RestaurantViewModelProviderFactory(application,restaurantRepository)
+
 
         viewModel= ViewModelProvider(this,factory).get(RestaurantViewModel::class.java)
         viewModel.getRestaurantInfo()

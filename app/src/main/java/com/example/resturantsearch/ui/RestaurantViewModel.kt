@@ -9,9 +9,12 @@ import com.example.resturantsearch.models.RestaurantInfo
 import com.example.resturantsearch.models.ResturantResponse
 import com.example.resturantsearch.repository.RestaurantRepository
 import com.example.resturantsearch.util.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RestaurantViewModel(
+@HiltViewModel
+class RestaurantViewModel @Inject constructor(
     val app: Application,
     val repository: RestaurantRepository):AndroidViewModel(app) {
 
@@ -33,7 +36,7 @@ class RestaurantViewModel(
         }
 
 
-    fun getRestaurants() = viewModelScope.launch {
+    private fun getRestaurants() = viewModelScope.launch {
         safeRestaurantCall()
     }
 
