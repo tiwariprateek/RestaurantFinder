@@ -3,20 +3,14 @@ package com.example.resturantsearch.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.resturantsearch.adapter.RestaurantAdapter
 import com.example.resturantsearch.databinding.ActivityMainBinding
-import com.example.resturantsearch.getJsonDataFromAsset
 import com.example.resturantsearch.models.*
 import com.example.resturantsearch.repository.RestaurantRepository
 import com.example.resturantsearch.repository.RestaurantViewModelProviderFactory
-import com.google.gson.Gson
-import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -24,8 +18,6 @@ class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     lateinit var restaurantAdapter: RestaurantAdapter
     private lateinit var restaurantResponse: ResturantResponse
-    private lateinit var menuResponse: MenuResponse
-    private lateinit var restaurantInfo: RestaurantInfo
     private var restaurants = ArrayList<RestaurantInfo>()
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: RestaurantViewModel
