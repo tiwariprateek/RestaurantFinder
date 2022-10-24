@@ -3,6 +3,8 @@ package com.example.resturantsearch.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +13,7 @@ import com.example.resturantsearch.databinding.ActivityMainBinding
 import com.example.resturantsearch.models.*
 import com.example.resturantsearch.repository.RestaurantRepository
 import com.example.resturantsearch.repository.RestaurantViewModelProviderFactory
+import com.example.resturantsearch.util.Resource
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -31,15 +34,39 @@ class MainActivity : AppCompatActivity() {
         val factory = RestaurantViewModelProviderFactory(application,restaurantRepository)
 
         viewModel= ViewModelProvider(this,factory).get(RestaurantViewModel::class.java)
-        viewModel.getResturants()
+        viewModel.getRestaurantInfo()
         setupRecyclerView()
 
-        viewModel.restaurants.observe(this) {
-            restaurants = it
+        viewModel.restaurants.observe(this) {response ->
+            when(response){
+                is Resource.Success -> {
+                    hideProgressBar()
+                    restaurants = response.data!!
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                    Toast.makeText(this,"An error occured ", Toast.LENGTH_LONG).show()
+                }
+            }
         }
-        viewModel.restaurantResponse.observe(this){
-            restaurantResponse = it
-            restaurantAdapter.differ.submitList(it.restaurants)
+        viewModel.restaurantResponse.observe(this){response ->
+            when(response){
+                is Resource.Success -> {
+                    hideProgressBar()
+                    restaurantResponse = response.data!!
+                    restaurantAdapter.differ.submitList(response.data.restaurants)
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                    Toast.makeText(this,"An error occured ", Toast.LENGTH_LONG).show()
+                }
+            }
         }
 
 
@@ -48,7 +75,6 @@ class MainActivity : AppCompatActivity() {
                 return false
             }
             override fun onQueryTextChange(newText: String?): Boolean {
-                viewModel.getRestaurantInfo()
                 val searchResult = ArrayList<RestaurantsItem>()
                 if(!newText.isNullOrBlank()) {
                     val searchText = newText.lowercase(Locale.getDefault())
@@ -82,6 +108,17 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
+
+    private fun hideProgressBar() {
+        binding.progress.visibility= View.INVISIBLE
+        isLoading=false
+    }
+    private fun showProgressBar(){
+        binding.progress.visibility= View.VISIBLE
+        isLoading=true
+    }
+    var isLoading = false
+
 
 
     private fun setupRecyclerView(){
