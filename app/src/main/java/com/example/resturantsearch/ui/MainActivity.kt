@@ -82,27 +82,29 @@ class MainActivity : AppCompatActivity() {
                 if(!newText.isNullOrBlank()) {
                     val searchText = newText.lowercase(Locale.getDefault())
                     restaurants.forEach {
-                        if (it.restaurantResponse.name?.lowercase(Locale.getDefault())?.contains(searchText)!! or
-                            it.restaurantResponse.cuisineType?.lowercase(Locale.getDefault())?.contains(searchText)!!) {
+                        if (it.restaurantResponse.name?.lowercase(Locale.getDefault())
+                                ?.contains(searchText)!! or
+                            it.restaurantResponse.cuisineType?.lowercase(Locale.getDefault())
+                                ?.contains(searchText)!!
+                        ) {
                             searchResult.add(it.restaurantResponse)
                             restaurantAdapter.differ.submitList(searchResult)
-                            Log.d(TAG, "Found name or cuisine ")
-                        }
-                        else {
-                            Log.d(TAG, "Not Found name or cuisine ")
-                            it.menuItemsItem.forEach { dish ->
-                                if (dish?.name?.lowercase(Locale.getDefault())?.contains(searchText)!!) {
-                                    searchResult.add(it.restaurantResponse)
-                                    restaurantAdapter.differ.submitList(searchResult)
-                                    Log.d(TAG, "Found dish")
-                                }
-                                else{
-                                    Log.d(TAG, "Not Found dish")
+                        } else {
+                            run breaking@{
+                                it.menuItemsItem.forEach { dish ->
+                                    if (dish?.name?.lowercase(Locale.getDefault())
+                                            ?.contains(searchText)!!
+                                    ) {
+                                        searchResult.add(it.restaurantResponse)
+                                        restaurantAdapter.differ.submitList(searchResult)
+                                        return@breaking
+                                    }
                                 }
                             }
                         }
                     }
                 }
+
                 else restaurantAdapter.differ.submitList(restaurantResponse.restaurants)
 
                 return false

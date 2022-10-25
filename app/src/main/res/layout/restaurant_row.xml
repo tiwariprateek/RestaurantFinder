@@ -22,45 +22,50 @@
     <ImageView
         android:scaleType="centerCrop"
         android:id="@+id/restaurant_image"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/bar" />
 
     <TextView
-
+        android:lines="1"
         android:id="@+id/restaurant_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:fontFamily="sans-serif-black"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/restaurant_cuisine"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/restaurant_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="spread_inside"
         tools:text="Name" />
 
     <TextView
+        android:lines="1"
         android:id="@+id/restaurant_cuisine"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         app:layout_constraintBottom_toTopOf="@+id/restaurant_address"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/restaurant_image"
         app:layout_constraintTop_toBottomOf="@+id/restaurant_name"
         tools:text="Cuisine Type" />
 
 
     <TextView
+        android:maxLines="2"
         android:id="@+id/restaurant_address"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/restaurant_image"
         app:layout_constraintTop_toBottomOf="@+id/restaurant_cuisine"
         tools:text="Address" />

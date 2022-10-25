@@ -1,5 +1,6 @@
 package com.example.resturantsearch.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -9,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.example.resturantsearch.databinding.RestaurantRowBinding
 import com.example.resturantsearch.models.RestaurantsItem
 
-class RestaurantAdapter(): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>() {
+class RestaurantAdapter: RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>() {
 
     private val differCallback=object : DiffUtil.ItemCallback<RestaurantsItem>(){
         override fun areItemsTheSame(oldItem: RestaurantsItem, newItem: RestaurantsItem): Boolean {
@@ -22,10 +23,6 @@ class RestaurantAdapter(): RecyclerView.Adapter<RestaurantAdapter.RestaurantView
     }
     val differ= AsyncListDiffer(this,differCallback)
 
-    private var onItemClickListener:((RestaurantsItem)->Unit)?=null
-    fun setOnItemClickListener(listener:(RestaurantsItem) -> Unit){
-        onItemClickListener=listener
-    }
 
     inner class RestaurantViewHolder(val binding: RestaurantRowBinding): RecyclerView.ViewHolder(binding.root) {
 
