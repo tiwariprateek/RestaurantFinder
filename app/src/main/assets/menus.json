@@ -1,5 +1,6 @@
 {
-  "menus":[{
+  "menus":[
+    {
     "restaurantId":1,
     "categories":[
       {
@@ -90,7 +91,7 @@
       ]
     },
     {
-      "restaurantId":50,
+      "restaurantId":3,
       "categories":[
         {
           "id":"26576",
@@ -98,7 +99,7 @@
           "menu-items":[
             {
               "id":"94298",
-              "name":"Prateek",
+              "name":"Fried Chicken",
               "description":"Tender, Spicy and Juicy. Original or Peri-Crusted",
               "price":"250.00",
               "images":[]
@@ -106,6 +107,141 @@
             {
               "id":"94301",
               "name":"Chicken Livers and Portuguese Roll",
+              "description":"Chicken Livers Topped with PERi-PERi Sauce, Served with A Roll To Soak Up The Sauce",
+              "price":"250.00",
+              "images":["https://static.toiimg.com/thumb/53007558.cms?width=1200&height=900"]
+            }
+          ]
+        },
+        {
+          "id":"26588",
+          "name":"Peri-peri chicken",
+          "menu-items":[
+            {
+              "id":"94349",
+              "name":"1/4 Chicken",
+              "description":"Quarter Chicken Marinated with PERi-PERi Sauce and Grilled",
+              "price":"385.00",
+              "images":["https://assets.epicurious.com/photos/5732526f1877f76a0e20831c/1:1/w_2560%2Cc_limit/EP_05102016_PeruvianStyleRoastChicken_recipe_.jpg"]
+            },
+            {
+              "id":"94352",
+              "name":"1/2 Chicken",
+              "description":"Half Chicken Marinated with PERi-PERi Sauce and Grilled",
+              "price":"685.00",
+              "images":["https://hips.hearstapps.com/hmg-prod/images/delish-190808-baked-drumsticks-0217-landscape-pf-1567089281.jpg"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+    "restaurantId":4,
+    "categories":[
+      {
+        "id":"26576",
+        "name":"Appeteasers",
+        "menu-items":[
+          {
+            "id":"94298",
+            "name":"Dal makhani",
+            "description":"Tender, Spicy and Juicy. Original or Peri-Crusted",
+            "price":"250.00",
+            "images":[]
+          },
+          {
+            "id":"94301",
+            "name":"Chilli chicken ",
+            "description":"Chicken Livers Topped with PERi-PERi Sauce, Served with A Roll To Soak Up The Sauce",
+            "price":"250.00",
+            "images":["https://static.toiimg.com/thumb/53007558.cms?width=1200&height=900"]
+          }
+        ]
+      },
+      {
+        "id":"26588",
+        "name":"Peri-peri chicken",
+        "menu-items":[
+          {
+            "id":"94349",
+            "name":"1/4 Chicken",
+            "description":"Quarter Chicken Marinated with PERi-PERi Sauce and Grilled",
+            "price":"385.00",
+            "images":["https://assets.epicurious.com/photos/5732526f1877f76a0e20831c/1:1/w_2560%2Cc_limit/EP_05102016_PeruvianStyleRoastChicken_recipe_.jpg"]
+          },
+          {
+            "id":"94352",
+            "name":"1/2 Chicken",
+            "description":"Half Chicken Marinated with PERi-PERi Sauce and Grilled",
+            "price":"685.00",
+            "images":["https://hips.hearstapps.com/hmg-prod/images/delish-190808-baked-drumsticks-0217-landscape-pf-1567089281.jpg"]
+          }
+        ]
+      }
+    ]
+  },
+    {
+      "restaurantId":4,
+      "categories":[
+        {
+          "id":"26576",
+          "name":"Appeteasers",
+          "menu-items":[
+            {
+              "id":"94298",
+              "name":"Paneer Tikka",
+              "description":"Tender, Spicy and Juicy. Original or Peri-Crusted",
+              "price":"250.00",
+              "images":[]
+            },
+            {
+              "id":"94301",
+              "name":"Soya chaap",
+              "description":"Chicken Livers Topped with PERi-PERi Sauce, Served with A Roll To Soak Up The Sauce",
+              "price":"250.00",
+              "images":["https://static.toiimg.com/thumb/53007558.cms?width=1200&height=900"]
+            }
+          ]
+        },
+        {
+          "id":"26588",
+          "name":"Peri-peri chicken",
+          "menu-items":[
+            {
+              "id":"94349",
+              "name":"1/4 Chicken",
+              "description":"Quarter Chicken Marinated with PERi-PERi Sauce and Grilled",
+              "price":"385.00",
+              "images":["https://assets.epicurious.com/photos/5732526f1877f76a0e20831c/1:1/w_2560%2Cc_limit/EP_05102016_PeruvianStyleRoastChicken_recipe_.jpg"]
+            },
+            {
+              "id":"94352",
+              "name":"1/2 Chicken",
+              "description":"Half Chicken Marinated with PERi-PERi Sauce and Grilled",
+              "price":"685.00",
+              "images":["https://hips.hearstapps.com/hmg-prod/images/delish-190808-baked-drumsticks-0217-landscape-pf-1567089281.jpg"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "restaurantId":6,
+      "categories":[
+        {
+          "id":"26576",
+          "name":"Appeteasers",
+          "menu-items":[
+            {
+              "id":"94298",
+              "name":"Chole bhature",
+              "description":"Tender, Spicy and Juicy. Original or Peri-Crusted",
+              "price":"250.00",
+              "images":[]
+            },
+            {
+              "id":"94301",
+              "name":"Chole khulche",
               "description":"Chicken Livers Topped with PERi-PERi Sauce, Served with A Roll To Soak Up The Sauce",
               "price":"250.00",
               "images":["https://static.toiimg.com/thumb/53007558.cms?width=1200&height=900"]
