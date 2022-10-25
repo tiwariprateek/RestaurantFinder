@@ -40,14 +40,17 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <TextView
+        android:drawableStart="@drawable/ic_baseline_search_off_48"
+        android:textSize="18dp"
+        android:gravity="center"
         android:id="@+id/not_found_text"
         android:text="No results found :("
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@id/restaurant_search"
+        app:layout_constraintTop_toBottomOf="@id/restaurant_search"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -103,9 +103,21 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
+                    if(searchResult.isEmpty()){
+                        binding.restaurantRv.visibility = View.GONE
+                        binding.notFoundText.visibility = View.VISIBLE
+                    }
+                    else{
+                        binding.restaurantRv.visibility = View.VISIBLE
+                        binding.notFoundText.visibility = View.GONE
+                    }
                 }
 
-                else restaurantAdapter.differ.submitList(restaurantResponse.restaurants)
+                else {
+                    restaurantAdapter.differ.submitList(restaurantResponse.restaurants)
+                    binding.restaurantRv.visibility = View.VISIBLE
+                    binding.notFoundText.visibility = View.GONE
+                }
 
                 return false
             }

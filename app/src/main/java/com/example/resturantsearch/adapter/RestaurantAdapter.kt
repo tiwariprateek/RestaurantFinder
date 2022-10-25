@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.resturantsearch.R
 import com.example.resturantsearch.databinding.RestaurantRowBinding
 import com.example.resturantsearch.models.RestaurantsItem
 
@@ -37,7 +38,11 @@ class RestaurantAdapter: RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHo
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
         val restaurant=differ.currentList[position]
         holder.binding.apply {
-            Glide.with(this.restaurantImage).load(restaurant.photograph).into(this.restaurantImage)
+            Glide.with(this.restaurantImage)
+                .load(restaurant.photograph)
+                .placeholder(R.drawable.bar)
+                .error(R.drawable.bar)
+                .into(this.restaurantImage)
             restaurantName.text = restaurant.name
             restaurantAddress.text = restaurant.address
             restaurantCuisine.text = restaurant.cuisineType
