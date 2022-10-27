@@ -17,6 +17,7 @@ import com.example.resturantsearch.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.log
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -55,6 +56,25 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        viewModel.searchResult.observe(this){searchResult ->
+            Log.d(TAG, "onCreate: Search result changes $searchResult")
+            if (searchResult!=null) {
+                restaurantAdapter.differ.submitList(searchResult)
+                if (searchResult.isEmpty()) {
+                    binding.restaurantRv.visibility = View.GONE
+                    binding.notFoundText.visibility = View.VISIBLE
+                } else {
+                    binding.restaurantRv.visibility = View.VISIBLE
+                    binding.notFoundText.visibility = View.GONE
+                }
+            }
+            else{
+                restaurantAdapter.differ.submitList(restaurantResponse.restaurants)
+                binding.restaurantRv.visibility = View.GONE
+                binding.notFoundText.visibility = View.VISIBLE
+            }
+
+        }
         viewModel.restaurantResponse.observe(this){response ->
             when(response){
                 is Resource.Success -> {
@@ -78,53 +98,21 @@ class MainActivity : AppCompatActivity() {
                 return false
             }
             override fun onQueryTextChange(newText: String?): Boolean {
-                val searchResult = ArrayList<RestaurantsItem>()
                 if(!newText.isNullOrBlank()) {
-                    val searchText = newText.lowercase(Locale.getDefault())
-                    restaurants.forEach {
-                        if (it.restaurantResponse.name?.lowercase(Locale.getDefault())
-                                ?.contains(searchText)!! or
-                            it.restaurantResponse.cuisineType?.lowercase(Locale.getDefault())
-                                ?.contains(searchText)!!
-                        ) {
-                            searchResult.add(it.restaurantResponse)
-                            restaurantAdapter.differ.submitList(searchResult)
-                        } else {
-                            run breaking@{
-                                it.menuItemsItem.forEach { dish ->
-                                    if (dish?.name?.lowercase(Locale.getDefault())
-                                            ?.contains(searchText)!!
-                                    ) {
-                                        searchResult.add(it.restaurantResponse)
-                                        restaurantAdapter.differ.submitList(searchResult)
-                                        return@breaking
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if(searchResult.isEmpty()){
-                        binding.restaurantRv.visibility = View.GONE
-                        binding.notFoundText.visibility = View.VISIBLE
-                    }
-                    else{
-                        binding.restaurantRv.visibility = View.VISIBLE
-                        binding.notFoundText.visibility = View.GONE
-                    }
+                    viewModel.filterSearch(newText, restaurants)
                 }
-
                 else {
                     restaurantAdapter.differ.submitList(restaurantResponse.restaurants)
                     binding.restaurantRv.visibility = View.VISIBLE
                     binding.notFoundText.visibility = View.GONE
                 }
-
                 return false
             }
 
         })
 
     }
+
 
     private fun hideProgressBar() {
         binding.progress.visibility= View.INVISIBLE
