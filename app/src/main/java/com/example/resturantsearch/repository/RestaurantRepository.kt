@@ -8,18 +8,15 @@ import com.example.resturantsearch.models.RestaurantInfo
 import com.example.resturantsearch.models.ResturantResponse
 import com.google.gson.Gson
 
-class RestaurantRepository(val context: Context) {
+class RestaurantRepository(private val context: Context) {
     private val TAG = "RestaurantRepository"
 
-    suspend fun getInitialRestaurantList():ResturantResponse {
-        val restaurantJson = getJsonDataFromAsset(context, "restaurants.json")
-        return Gson().fromJson(restaurantJson, ResturantResponse::class.java)
+    fun readJsonFromLocal(jsonPath:String, dataClass:Any):Any {
+        val restaurantJson = getJsonDataFromAsset(context, jsonPath)
+        return Gson().fromJson(restaurantJson, dataClass::class.java)
     }
-    suspend fun readJson():ArrayList<RestaurantInfo> {
+    fun fetchDetailsFromJson(restaurantResponse:ResturantResponse, menuResponse: MenuResponse):ArrayList<RestaurantInfo> {
         val restaurants = ArrayList<RestaurantInfo>()
-        val menuJson = getJsonDataFromAsset(context, "menus.json")
-        val restaurantResponse = getInitialRestaurantList()
-        val menuResponse = Gson().fromJson(menuJson, MenuResponse::class.java)
         Log.i(TAG, "Restaurants $restaurantResponse")
         Log.i(TAG, "Menu $menuResponse")
 
