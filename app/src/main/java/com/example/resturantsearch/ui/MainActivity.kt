@@ -11,11 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.resturantsearch.adapter.RestaurantAdapter
 import com.example.resturantsearch.databinding.ActivityMainBinding
 import com.example.resturantsearch.models.*
-import com.example.resturantsearch.repository.RestaurantRepository
-import com.example.resturantsearch.repository.RestaurantViewModelProviderFactory
 import com.example.resturantsearch.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
@@ -27,17 +24,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: RestaurantViewModel
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val restaurantRepository=RestaurantRepository(application)
-        val factory = RestaurantViewModelProviderFactory(application,restaurantRepository)
-
-
-        viewModel= ViewModelProvider(this,factory).get(RestaurantViewModel::class.java)
-        viewModel.getRestaurantInfo()
+        viewModel= ViewModelProvider(this).get(RestaurantViewModel::class.java)
         setupRecyclerView()
 
         viewModel.restaurants.observe(this) {response ->
@@ -45,86 +38,58 @@ class MainActivity : AppCompatActivity() {
                 is Resource.Success -> {
                     hideProgressBar()
                     restaurants = response.data!!
+                    restaurantAdapter.differ.submitList(restaurants.map { it -> it.restaurantResponse })
                 }
                 is Resource.Loading -> {
                     showProgressBar()
                 }
                 is Resource.Error -> {
+                    Log.e(TAG, "onCreate: restaurants error ${response.message}")
                     hideProgressBar()
                     Toast.makeText(this,"An error occured ", Toast.LENGTH_LONG).show()
                 }
             }
         }
-        viewModel.restaurantResponse.observe(this){response ->
-            when(response){
-                is Resource.Success -> {
-                    hideProgressBar()
-                    restaurantResponse = response.data!!
-                    restaurantAdapter.differ.submitList(response.data.restaurants)
-                }
-                is Resource.Loading -> {
-                    showProgressBar()
-                }
-                is Resource.Error -> {
-                    hideProgressBar()
-                    Toast.makeText(this,"An error occured ", Toast.LENGTH_LONG).show()
+        viewModel.searchResult.observe(this){searchResult ->
+            Log.d(TAG, "onCreate: Search result changes $searchResult")
+            if (searchResult!=null) {
+                restaurantAdapter.differ.submitList(searchResult)
+                if (searchResult.isEmpty()) {
+                    binding.restaurantRv.visibility = View.GONE
+                    binding.notFoundText.visibility = View.VISIBLE
+                } else {
+                    binding.restaurantRv.visibility = View.VISIBLE
+                    binding.notFoundText.visibility = View.GONE
                 }
             }
-        }
+            else{
+                restaurantAdapter.differ.submitList(restaurants.map { it.restaurantResponse })
+                binding.restaurantRv.visibility = View.GONE
+                binding.notFoundText.visibility = View.VISIBLE
+            }
 
+        }
 
         binding.restaurantSearch.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
             override fun onQueryTextChange(newText: String?): Boolean {
-                val searchResult = ArrayList<RestaurantsItem>()
                 if(!newText.isNullOrBlank()) {
-                    val searchText = newText.lowercase(Locale.getDefault())
-                    restaurants.forEach {
-                        if (it.restaurantResponse.name?.lowercase(Locale.getDefault())
-                                ?.contains(searchText)!! or
-                            it.restaurantResponse.cuisineType?.lowercase(Locale.getDefault())
-                                ?.contains(searchText)!!
-                        ) {
-                            searchResult.add(it.restaurantResponse)
-                            restaurantAdapter.differ.submitList(searchResult)
-                        } else {
-                            run breaking@{
-                                it.menuItemsItem.forEach { dish ->
-                                    if (dish?.name?.lowercase(Locale.getDefault())
-                                            ?.contains(searchText)!!
-                                    ) {
-                                        searchResult.add(it.restaurantResponse)
-                                        restaurantAdapter.differ.submitList(searchResult)
-                                        return@breaking
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if(searchResult.isEmpty()){
-                        binding.restaurantRv.visibility = View.GONE
-                        binding.notFoundText.visibility = View.VISIBLE
-                    }
-                    else{
-                        binding.restaurantRv.visibility = View.VISIBLE
-                        binding.notFoundText.visibility = View.GONE
-                    }
+                    viewModel.filterSearch(newText, restaurants)
                 }
-
                 else {
-                    restaurantAdapter.differ.submitList(restaurantResponse.restaurants)
+                    restaurantAdapter.differ.submitList(restaurants.map { it.restaurantResponse })
                     binding.restaurantRv.visibility = View.VISIBLE
                     binding.notFoundText.visibility = View.GONE
                 }
-
                 return false
             }
 
         })
 
     }
+
 
     private fun hideProgressBar() {
         binding.progress.visibility= View.INVISIBLE
