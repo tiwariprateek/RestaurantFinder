@@ -24,6 +24,7 @@ class RestaurantViewModel @Inject constructor(
 
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 
+
     private val TAG = "RestaurantViewModel"
 
     private val _restaurants = MutableLiveData<Resource<ArrayList<RestaurantInfo>>>()
@@ -43,6 +44,10 @@ class RestaurantViewModel @Inject constructor(
         getRestaurantInfo()
     }
 
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        _restaurants.postValue(Resource.Error(throwable.message.toString()))
+    }
+
 
     private fun getRestaurantInfo() = viewModelScope.launch(defaultDispatcher) {
         safeRestaurantInfoCall()
@@ -50,21 +55,22 @@ class RestaurantViewModel @Inject constructor(
 
     private fun safeRestaurantInfoCall(){
         _restaurants.postValue(Resource.Loading())
-        try {
-            viewModelScope.launch(defaultDispatcher) {
-                val restaurantResponse = async {
+        viewModelScope.launch(exceptionHandler) {
+            Log.d(TAG, "safeRestaurantInfoCall: ${Thread.currentThread().name}")
+            withContext(defaultDispatcher) {
+                val restaurantResponseDeferred = async {
                     repository.readJsonFromLocal(
                         "restaurants.json", ResturantResponse()
                     )
                 }
 
-                val menuResponse = async {
+                val menuResponseDeferred = async {
                     repository.readJsonFromLocal(
                         "menus.json", MenuResponse()
                     )
                 }
-                val menu = menuResponse.await()
-                val restaurant = restaurantResponse.await()
+                val menu = menuResponseDeferred.await()
+                val restaurant = restaurantResponseDeferred.await()
                 when (menu) {
                     is Resource.Success -> {
                         if (restaurant is Resource.Success) {
@@ -72,8 +78,7 @@ class RestaurantViewModel @Inject constructor(
                                 restaurant.data as ResturantResponse, menu.data as MenuResponse
                             )
                             _restaurants.postValue(Resource.Success(response.data!!))
-                        }
-                        else _restaurants.postValue(Resource.Error("Exception"))
+                        } else _restaurants.postValue(Resource.Error("Exception"))
                     }
                     is Resource.Loading -> {
                         _restaurants.postValue(Resource.Loading())
@@ -83,9 +88,6 @@ class RestaurantViewModel @Inject constructor(
                     }
                 }
             }
-        }
-        catch (t:Throwable){
-            _restaurants.postValue(Resource.Error(t.message.toString()))
         }
     }
 
