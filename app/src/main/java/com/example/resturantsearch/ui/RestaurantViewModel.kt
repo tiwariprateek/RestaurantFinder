@@ -12,9 +12,8 @@ import com.example.resturantsearch.models.ResturantResponse
 import com.example.resturantsearch.repository.RestaurantRepository
 import com.example.resturantsearch.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -53,17 +52,36 @@ class RestaurantViewModel @Inject constructor(
         _restaurants.postValue(Resource.Loading())
         try {
             viewModelScope.launch(defaultDispatcher) {
-                val restaurantResponse = repository.readJsonFromLocal(
-                    "restaurants.json",
-                    ResturantResponse()
-                ) as ResturantResponse
-                val menuResponse =
-                    repository.readJsonFromLocal("menus.json", MenuResponse()) as MenuResponse
-                val response = repository.fetchDetailsFromJson(restaurantResponse, menuResponse)
-                if (response.isNotEmpty()) {
-                    _restaurants.postValue(Resource.Success(response))
-                } else
-                    _restaurants.postValue(Resource.Error("Not able to parse json properly"))
+                val restaurantResponse = async {
+                    repository.readJsonFromLocal(
+                        "restaurants.json", ResturantResponse()
+                    )
+                }
+
+                val menuResponse = async {
+                    repository.readJsonFromLocal(
+                        "menus.json", MenuResponse()
+                    )
+                }
+                val menu = menuResponse.await()
+                val restaurant = restaurantResponse.await()
+                when (menu) {
+                    is Resource.Success -> {
+                        if (restaurant is Resource.Success) {
+                            val response = repository.fetchDetailsFromJson(
+                                restaurant.data as ResturantResponse, menu.data as MenuResponse
+                            )
+                            _restaurants.postValue(Resource.Success(response.data!!))
+                        }
+                        else _restaurants.postValue(Resource.Error("Exception"))
+                    }
+                    is Resource.Loading -> {
+                        _restaurants.postValue(Resource.Loading())
+                    }
+                    is Resource.Error -> {
+                        _restaurants.postValue(Resource.Error("Not able to parse json properly"))
+                    }
+                }
             }
         }
         catch (t:Throwable){
@@ -74,7 +92,7 @@ class RestaurantViewModel @Inject constructor(
     fun filterSearch(newText:String, restaurants: ArrayList<RestaurantInfo>) {
         Log.d(TAG, "filterSearch: called $newText $restaurants")
         val result = ArrayList<RestaurantsItem>()
-        viewModelScope.launch() {
+        viewModelScope.launch(defaultDispatcher) {
             if (newText.isNotBlank()) {
                 val searchText = newText.lowercase(Locale.getDefault())
                 restaurants.forEach {
@@ -108,7 +126,5 @@ class RestaurantViewModel @Inject constructor(
             }
         }
     }
-
-
 
 }
